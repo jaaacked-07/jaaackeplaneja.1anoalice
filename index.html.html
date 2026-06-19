@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>1 Aninho da Alice · Planejador</title>
+<style>
+:root{
+  --cream:#FFF7F2; --blush:#FCE7EC; --rose:#E89AAE; --rose2:#DD7E97;
+  --rose-deep:#B65A77; --wine:#8E3F5A;
+  --gold:#C99A4E; --gold-lite:#E9CD8E; --gold-deep:#A8812F; --gold-foil:#D9B25E;
+  --ink:#5A4650; --ink-soft:#937E89; --line:#F0D6DE; --line-gold:#EAD3A0;
+  --ok:#5FA98C; --warn:#D69A3F; --bad:#C96A85;
+  --shadow:0 14px 34px rgba(182,90,119,.16);
+  --shadow-sm:0 4px 14px rgba(182,90,119,.10);
+  --r:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink); line-height:1.45; min-height:100vh; padding-bottom:96px;
+  background:
+    radial-gradient(1100px 420px at 85% -8%, #F8CBDA 0%, transparent 58%),
+    radial-gradient(900px 420px at -10% 4%, #F7E4BE 0%, transparent 52%),
+    linear-gradient(180deg,#FFF2F5 0%, var(--cream) 30%);
+}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ===== HEADER ===== */
+header.top{position:relative;overflow:hidden;color:#fff;border-radius:0 0 34px 34px;
+  padding:24px 16px 30px;box-shadow:var(--shadow);
+  background:linear-gradient(150deg,#F3B6C6 0%,#E78FA6 42%,#C96A85 100%);}
+header.top::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 40%,rgba(255,236,200,.35) 50%,transparent 60%);}
+.h-deco{position:absolute;inset:0;pointer-events:none}
+.h-inner{position:relative;z-index:2;text-align:center;max-width:920px;margin:0 auto}
+.eyebrow{letter-spacing:.34em;text-transform:uppercase;font-size:11px;font-weight:700;opacity:.95}
+.gold-rule{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px auto 2px;max-width:240px}
+.gold-rule .ln{height:1px;flex:1;background:linear-gradient(90deg,transparent,#FBE6BA)}
+.gold-rule .dia{color:#FBE6BA;font-size:12px}
+.num1{font-family:Georgia,serif;font-size:clamp(46px,13vw,80px);font-weight:700;line-height:.85;margin:8px 0 0;
+  background:linear-gradient(180deg,#FFF6E2,#E9CD8E 55%,#C99A4E);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 8px rgba(120,30,55,.35))}
+.num1-sub{font-size:13px;letter-spacing:.3em;text-transform:uppercase;opacity:.92;margin-top:-2px}
+.baby-name{font-size:clamp(26px,6.6vw,40px);font-style:italic;font-weight:600;letter-spacing:.4px;margin:10px 0 2px;
+  text-shadow:0 2px 12px rgba(120,30,55,.3)}
+.baby-sub{font-size:13.5px;opacity:.96;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:7px}
+.baby-sub b{font-weight:700}
+.countdown{display:inline-flex;align-items:baseline;gap:8px;margin-top:14px;padding:8px 18px;border-radius:999px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,242,214,.5);backdrop-filter:blur(4px)}
+.countdown .num{font-size:26px;font-weight:800;line-height:1;color:#FFF1D8}
+
+/* ===== TOOLBAR ===== */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0 2px}
+.tbtn{border:1px solid var(--line-gold);background:#fff;color:var(--rose-deep);border-radius:999px;
+  padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  box-shadow:var(--shadow-sm);transition:.15s}
+.tbtn:hover{transform:translateY(-1px);border-color:var(--gold);color:var(--gold-deep)}
+
+/* ===== TABS ===== */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fffffff5;backdrop-filter:blur(12px);
+  border-top:1px solid var(--line-gold);display:flex;justify-content:space-around;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -10px 26px rgba(182,90,119,.12)}
+nav.tabs button{background:none;border:0;cursor:pointer;color:var(--ink-soft);font-size:10.5px;font-weight:700;
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 6px 7px;border-radius:14px;flex:1;
+  position:relative;transition:.15s}
+nav.tabs button .ic{font-size:20px;line-height:1}
+nav.tabs button.active{color:var(--rose-deep)}
+nav.tabs button.active::after{content:"";position:absolute;bottom:1px;width:22px;height:3px;border-radius:3px;
+  background:linear-gradient(90deg,var(--gold-lite),var(--gold))}
+
+main{padding-top:18px}
+.view{display:none;animation:fade .28s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== CARDS ===== */
+.card{position:relative;background:linear-gradient(180deg,#fff, #FFFAF6);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow);padding:18px;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--gold-lite),var(--gold),var(--rose))}
+.card + .card{margin-top:14px}
+h2.section{font-size:18px;margin:2px 0 14px;display:flex;align-items:center;gap:9px;color:var(--rose-deep);
+  font-family:Georgia,serif}
+h2.section .em{font-size:21px;-webkit-text-fill-color:initial}
+h2.section::after{content:"";flex:1;height:1px;margin-left:6px;
+  background:linear-gradient(90deg,var(--line-gold),transparent)}
+.muted{color:var(--ink-soft)} .small{font-size:12.5px}
+
+/* ===== STATS ===== */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 14px 14px 16px;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--gold-lite),var(--gold))}
+.stat .label{font-size:11px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.stat .value{font-size:20px;font-weight:800;margin-top:5px;color:var(--ink)}
+.stat .foot{font-size:11.5px;margin-top:3px}
+.stat .bar{height:7px;border-radius:999px;background:var(--line);margin-top:10px;overflow:hidden}
+.stat .bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rose),var(--gold-lite),var(--gold))}
+.stat.hero-rose{background:linear-gradient(145deg,#FFEDF1,#FBE6C9);border-color:var(--line-gold)}
+
+.dash-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:720px){.dash-grid{grid-template-columns:1fr 1fr}}
+
+/* donut */
+.donut-wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:150px}
+.legend .row{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend .dot{width:11px;height:11px;border-radius:4px;flex:0 0 auto}
+.legend .v{margin-left:auto;font-weight:700;color:var(--ink)}
+.legend .p{color:var(--ink-soft);font-size:11.5px;width:40px;text-align:right}
+
+.progress-list{display:flex;flex-direction:column;gap:11px}
+.pl-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.pl-top b{font-weight:700}
+.track{height:9px;border-radius:999px;background:var(--line);overflow:hidden}
+.track > i{display:block;height:100%;border-radius:999px}
+
+/* editable festa card */
+.festa-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.festa-grid .full{grid-column:1/-1}
+.f-field label{display:block;font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+input,select,textarea{font-family:inherit;font-size:14.5px;color:var(--ink);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;background:#fff;outline:none;width:100%;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px #E89AAE22}
+
+/* ===== ORÇAMENTO (lista visual) ===== */
+.budget-hero{background:linear-gradient(140deg,#FFEDF1,#FBE7CB);border:1px solid var(--line-gold);
+  border-radius:18px;padding:16px;margin-bottom:14px}
+.budget-nums{display:flex;justify-content:space-between;gap:8px;text-align:center;flex-wrap:wrap}
+.budget-nums .bn{flex:1;min-width:90px}
+.budget-nums .bn .l{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);font-weight:700}
+.budget-nums .bn .n{font-size:18px;font-weight:800;margin-top:2px}
+.bn.pago .n{color:var(--ok)} .bn.falta .n{color:var(--rose-deep)}
+.big-track{height:13px;border-radius:999px;background:#fff;border:1px solid var(--line-gold);overflow:hidden;margin-top:14px}
+.big-track > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rose),var(--gold-lite),var(--gold));transition:width .4s}
+.cap-line{font-size:12px;margin-top:8px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cap-line input{width:120px;padding:6px 10px;font-size:13px}
+
+.tools-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tools-row input.search{flex:1;min-width:150px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:700;
+  cursor:pointer;color:var(--ink-soft);white-space:nowrap}
+.chip.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+.linkbtn{background:none;border:0;color:var(--rose-deep);font-weight:700;font-size:12.5px;cursor:pointer;text-decoration:underline}
+
+/* category accordion */
+.cat{border:1px solid var(--line);border-radius:16px;margin-bottom:11px;overflow:hidden;background:#fff}
+.cat-head{display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;user-select:none}
+.cat-emoji{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex:0 0 auto}
+.cat-info{flex:1;min-width:0}
+.cat-name{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.cat-count{font-size:11.5px;color:var(--ink-soft);font-weight:600}
+.cat-money{text-align:right;flex:0 0 auto}
+.cat-money .m1{font-weight:800;font-size:13.5px}
+.cat-money .m2{font-size:11px;color:var(--ink-soft)}
+.cat-prog{height:6px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:7px}
+.cat-prog > i{display:block;height:100%;border-radius:999px}
+.chev{transition:.2s;color:var(--ink-soft);font-size:13px;margin-left:2px}
+.cat.open .chev{transform:rotate(90deg)}
+.cat-body{display:none;padding:4px 12px 12px;border-top:1px dashed var(--line)}
+.cat.open .cat-body{display:block;animation:fade .2s ease}
+
+.bi-row{display:flex;align-items:center;gap:9px;padding:8px 4px;border-bottom:1px solid #FBEFF3}
+.bi-row:last-of-type{border-bottom:0}
+.paid{width:28px;height:28px;border-radius:9px;border:2px solid var(--blush);background:#fff;cursor:pointer;
+  flex:0 0 auto;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800;transition:.15s}
+.paid.on{background:var(--ok);border-color:var(--ok)}
+.bi-name{flex:1;min-width:0;border:1px solid transparent;background:transparent;padding:7px 8px;font-size:14px;border-radius:9px}
+.bi-name:hover{background:#FFF6F8} .bi-row.paid-on .bi-name{color:var(--ink-soft);text-decoration:line-through}
+.bi-val{display:flex;align-items:center;gap:3px;background:#FBF1E2;border:1px solid var(--line-gold);border-radius:10px;
+  padding:3px 8px;flex:0 0 auto}
+.bi-val .rs{font-size:12px;color:var(--gold-deep);font-weight:700}
+.bi-num{width:66px;border:0;background:transparent;padding:4px 0;font-size:14px;font-weight:700;text-align:right;color:var(--ink)}
+.bi-num:focus{box-shadow:none}
+.bi-x{border:0;background:none;color:var(--bad);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px;flex:0 0 auto;opacity:.65}
+.bi-x:hover{opacity:1}
+.add-inline{width:100%;border:1.5px dashed var(--rose);background:#FFF6F8;color:var(--rose-deep);border-radius:11px;
+  padding:10px;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:8px}
+.add-inline:hover{background:#FFEEF2}
+
+/* ===== CHECKLIST / CONVIDADOS / CRONOGRAMA inline ===== */
+.row-line{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:13px;
+  background:#fff;margin-bottom:9px}
+.row-line.done{background:#F4FBF7;border-color:#D6EDE2}
+.cbox{width:26px;height:26px;border-radius:9px;border:2px solid var(--rose);background:#fff;cursor:pointer;flex:0 0 auto;
+  display:grid;place-items:center;color:#fff;font-size:16px;font-weight:800;transition:.15s}
+.cbox.on{background:var(--ok);border-color:var(--ok)}
+.row-line input.flex-in{flex:1;border:1px solid transparent;background:transparent;padding:7px 8px;font-size:14.5px;border-radius:9px}
+.row-line input.flex-in:hover{background:#FFF6F8}
+.row-line.done input.flex-in{text-decoration:line-through;color:var(--ink-soft)}
+.gstatus{border:0;border-radius:999px;padding:6px 12px;font-size:11.5px;font-weight:800;cursor:pointer;flex:0 0 auto;white-space:nowrap}
+.people{display:flex;align-items:center;gap:6px;flex:0 0 auto;background:#FBF1E2;border:1px solid var(--line-gold);border-radius:999px;padding:3px}
+.people button{width:26px;height:26px;border:0;border-radius:50%;background:#fff;color:var(--rose-deep);font-size:16px;font-weight:800;cursor:pointer;line-height:1}
+.people .pn{min-width:24px;text-align:center;font-weight:800;font-size:14px}
+.time-in{width:96px;flex:0 0 auto;text-align:center;font-weight:700;color:var(--rose-deep)}
+
+.notes{min-height:190px;resize:vertical;line-height:1.6}
+
+.empty{text-align:center;padding:24px 14px;color:var(--ink-soft);font-size:13.5px}
+.empty .em{font-size:34px;display:block;margin-bottom:6px;opacity:.7}
+
+footer.credit{text-align:center;padding:24px 16px 8px;color:var(--ink-soft);font-size:12px;line-height:1.7}
+.credit .heart{color:var(--rose)}
+.credit .gold{color:var(--gold-deep);font-weight:700}
+
+.save-note{background:#FFF7E8;border:1px solid var(--line-gold);border-radius:14px;padding:12px 14px;font-size:12.5px;
+  color:var(--gold-deep);line-height:1.55;margin-top:14px}
+.save-note b{color:var(--rose-deep)}
+
+#printArea{display:none}
+@media print{
+  body{background:#fff;padding:0} .app{display:none!important}
+  #printArea{display:block;padding:22px;color:#000}
+  #printArea h1{font-size:22px;margin:0 0 4px;color:#B65A77}
+  #printArea h2{font-size:15px;border-bottom:2px solid #C99A4E;padding-bottom:3px;margin:18px 0 8px;color:#B65A77}
+  #printArea table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:8px}
+  #printArea th,#printArea td{border:1px solid #ddd;padding:5px 7px;text-align:left}
+  #printArea th{background:#FCE3E9} #printArea .tot{font-weight:bold;background:#FBEFD9}
+  @page{margin:14mm}
+}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--wine);color:#fff;
+  padding:11px 18px;border-radius:999px;font-size:13px;font-weight:700;z-index:80;opacity:0;transition:.3s;pointer-events:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <svg class="h-deco" viewBox="0 0 920 230" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="#FBE6BA" opacity=".55">
+      <circle cx="70" cy="34" r="4"/><circle cx="150" cy="20" r="2.5"/><circle cx="250" cy="46" r="3"/>
+      <circle cx="670" cy="28" r="3"/><circle cx="780" cy="50" r="2.5"/><circle cx="860" cy="26" r="4"/>
+      <circle cx="430" cy="16" r="2.5"/><circle cx="560" cy="44" r="2.5"/>
+    </g>
+    <g stroke="#FBE6BA" stroke-width="1.6" fill="none" opacity=".7">
+      <path d="M330 206 q130 -26 260 0"/>
+      <path d="M388 200 q72 -16 144 0"/>
+    </g>
+    <g fill="#FBE6BA" opacity=".85"><circle cx="460" cy="206" r="3.4"/></g>
+  </svg>
+  <div class="h-inner">
+    <div class="eyebrow">Convite ao Primeiro Aniversário</div>
+    <div class="gold-rule"><span class="ln"></span><span class="dia">✦</span><span class="ln"></span></div>
+    <div class="num1">1</div>
+    <div class="num1-sub">aninho</div>
+    <div class="baby-name serif" id="hName">Alice Delfini dos Anjos Caratiero</div>
+    <div class="baby-sub">
+      <span>📅 <b id="hDate">—</b></span><span>📍 <b id="hVenue">—</b></span>
+    </div>
+    <div class="countdown" id="hCountdown"><span class="num">—</span><span>dias para a festa</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <button class="tbtn" onclick="exportExcel()">📊 Excel</button>
+    <button class="tbtn" onclick="exportPDF()">📄 PDF</button>
+    <button class="tbtn" onclick="backupJSON()">💾 Backup</button>
+    <button class="tbtn" onclick="document.getElementById('importFile').click()">📥 Restaurar</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSON(event)">
+  </div>
+
+  <main>
+    <!-- PAINEL -->
+    <section class="view active" id="view-painel">
+      <div class="card">
+        <h2 class="section"><span class="em">🎀</span> Detalhes da festa</h2>
+        <div class="festa-grid" id="festaForm"></div>
+      </div>
+
+      <div class="stats" id="statGrid" style="margin-top:14px"></div>
+
+      <div class="dash-grid" style="margin-top:14px">
+        <div class="card">
+          <h2 class="section"><span class="em">🥧</span> Custo por categoria</h2>
+          <div class="donut-wrap" id="donutWrap"></div>
+        </div>
+        <div class="card">
+          <h2 class="section"><span class="em">💗</span> Já pago por categoria</h2>
+          <div class="progress-list" id="catProgress"></div>
+        </div>
+      </div>
+
+      <div class="dash-grid" style="margin-top:14px">
+        <div class="card">
+          <h2 class="section"><span class="em">💌</span> Presença</h2>
+          <div class="progress-list" id="rsvpBars"></div>
+        </div>
+        <div class="card">
+          <h2 class="section"><span class="em">✅</span> Tarefas</h2>
+          <div id="taskMini"></div>
+        </div>
+      </div>
+
+      <div class="save-note" id="saveNote"></div>
+    </section>
+
+    <!-- ORÇAMENTO -->
+    <section class="view" id="view-orcamento">
+      <div class="card">
+        <h2 class="section"><span class="em">💰</span> Lista de compras & orçamento</h2>
+        <div class="budget-hero" id="budgetHero"></div>
+        <div class="tools-row">
+          <input class="search" id="itemSearch" placeholder="🔍 Buscar item..." oninput="renderBudget()">
+          <button class="chip" id="chipUnpaid" onclick="toggleUnpaid()">Só o que falta</button>
+          <button class="linkbtn" onclick="toggleAllCats()">abrir/fechar tudo</button>
+        </div>
+        <div id="catList"></div>
+        <p class="small muted" style="text-align:center;margin-top:10px">Os valores são estimativas — toque para ajustar. Marque o ✓ quando já comprar/pagar.</p>
+      </div>
+    </section>
+
+    <!-- CONVIDADOS -->
+    <section class="view" id="view-convidados">
+      <div class="card">
+        <h2 class="section"><span class="em">💌</span> Convidados</h2>
+        <div class="tools-row">
+          <input class="search" id="guestSearch" placeholder="🔍 Buscar..." oninput="renderGuests()">
+          <select id="guestFilter" onchange="renderGuests()" style="width:auto;flex:0 0 auto">
+            <option value="">Todos</option><option value="confirmado">Confirmados</option>
+            <option value="pendente">Pendentes</option><option value="recusado">Não vão</option>
+          </select>
+        </div>
+        <div id="guestTotals" class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px"></div>
+        <div id="guestList"></div>
+        <button class="add-inline" onclick="addGuest()">＋ Adicionar convidado</button>
+        <p class="small muted" style="text-align:center;margin-top:8px">Toque na etiqueta de presença para alternar: pendente → confirmado → não vai.</p>
+      </div>
+    </section>
+
+    <!-- TAREFAS -->
+    <section class="view" id="view-tarefas">
+      <div class="card">
+        <h2 class="section"><span class="em">📋</span> O que falta fazer</h2>
+        <div class="stat hero-rose" style="margin-bottom:14px">
+          <div class="label">Conclusão</div>
+          <div class="value"><span id="taskPct">0%</span></div>
+          <div class="bar"><i id="taskBar" style="width:0%"></i></div>
+          <div class="foot muted" id="taskCount">0 de 0</div>
+        </div>
+        <div id="taskList"></div>
+        <button class="add-inline" onclick="addTask()">＋ Adicionar tarefa</button>
+      </div>
+    </section>
+
+    <!-- MAIS: cronograma + notas -->
+    <section class="view" id="view-mais">
+      <div class="card">
+        <h2 class="section"><span class="em">⏰</span> Cronograma do dia</h2>
+        <div id="scheduleList"></div>
+        <button class="add-inline" onclick="addSchedule()">＋ Adicionar horário</button>
+      </div>
+      <div class="card">
+        <h2 class="section"><span class="em">📝</span> Observações</h2>
+        <textarea class="notes" id="notesArea" placeholder="Contatos de fornecedores, ideias, paleta de cores, recados..." oninput="onNotes()"></textarea>
+        <div class="small muted" style="margin-top:6px">Salvo automaticamente ✦</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="credit">
+  <div class="gold-rule" style="max-width:200px;margin:0 auto 10px"><span class="ln" style="background:linear-gradient(90deg,transparent,var(--gold-lite))"></span><span class="dia" style="color:var(--gold)">✦</span><span class="ln" style="background:linear-gradient(90deg,var(--gold-lite),transparent)"></span></div>
+  Feito com <span class="heart">♥</span> para a <span class="gold">Alice Delfini dos Anjos Caratiero</span><br>
+  Planejador da Festa
+</footer>
+
+<nav class="tabs">
+  <button data-view="painel" class="active" onclick="go('painel')"><span class="ic">🏠</span>Painel</button>
+  <button data-view="orcamento" onclick="go('orcamento')"><span class="ic">💰</span>Compras</button>
+  <button data-view="convidados" onclick="go('convidados')"><span class="ic">💌</span>Convidados</button>
+  <button data-view="tarefas" onclick="go('tarefas')"><span class="ic">📋</span>Tarefas</button>
+  <button data-view="mais" onclick="go('mais')"><span class="ic">⏰</span>Mais</button>
+</nav>
+</div>
+
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== ARMAZENAMENTO (compatível com GitHub Pages / offline) ===== */
+var KEY="festaAlice_v2", mem=null;
+function rawGet(){try{return localStorage.getItem(KEY)}catch(e){return mem}}
+function rawSet(v){try{localStorage.setItem(KEY,v)}catch(e){mem=v}}
+
+var CATS=[
+  {id:"decoracao",nome:"Decoração",emoji:"🎀",cor:"#E89AAE"},
+  {id:"buffet",nome:"Buffet & Salgados",emoji:"🍽️",cor:"#C99A4E"},
+  {id:"doces",nome:"Doces & Bolo",emoji:"🧁",cor:"#E3A8C4"},
+  {id:"bebidas",nome:"Bebidas",emoji:"🥤",cor:"#B98BB0"},
+  {id:"lembrancinhas",nome:"Lembrancinhas",emoji:"🎁",cor:"#D98F86"},
+  {id:"fotografia",nome:"Fotografia",emoji:"📸",cor:"#C58F6B"},
+  {id:"roupas",nome:"Roupas",emoji:"👗",cor:"#E0859B"},
+  {id:"aluguel",nome:"Aluguel",emoji:"🪑",cor:"#A9A07A"},
+  {id:"convidados",nome:"Convites",emoji:"✉️",cor:"#CE7E9E"},
+  {id:"outros",nome:"Outros",emoji:"✨",cor:"#B79BC0"}
+];
+function cat(id){return CATS.find(c=>c.id===id)||CATS[CATS.length-1]}
+
+function seedItems(){
+  var L=[
+    ["decoracao","Painel / backdrop do tema",250],["decoracao","Kit de balões",120],
+    ["decoracao","Toalhas de mesa",60],["decoracao","Arranjos / flores",100],
+    ["decoracao","Faixa \"1 aninho\"",30],
+    ["doces","Bolo de aniversário",220],["doces","Topo de bolo",40],["doces","Velinha número 1",15],
+    ["doces","Docinhos (100 un.)",180],["doces","Cupcakes",90],
+    ["buffet","Salgados (100 un.)",150],["buffet","Mini sanduíches / lanches",80],
+    ["bebidas","Refrigerantes",60],["bebidas","Sucos",40],["bebidas","Água",20],
+    ["lembrancinhas","Lembrancinhas dos convidados",200],["lembrancinhas","Tags e sacolas",30],
+    ["fotografia","Fotógrafo",400],
+    ["roupas","Vestido da Alice",150],["roupas","Tiara / faixa de cabelo",40],
+    ["aluguel","Mesas e cadeiras",120],
+    ["convidados","Convites",50],
+    ["outros","Decoração da mesa do bolo",120]
+  ];
+  return L.map(x=>({id:uid(),categoria:x[0],nome:x[1],valor:x[2],pago:false}));
+}
+function defaults(){
+  return {
+    meta:{babyName:"Alice Delfini dos Anjos Caratiero",eventDate:"",eventTime:"",venue:"",theme:"Rosé & Dourado",budgetCap:""},
+    items:seedItems(),
+    guests:[],
+    tasks:[
+      "Definir data, horário e local","Escolher o tema da festa","Montar a lista de convidados",
+      "Enviar os convites","Encomendar o bolo de 1 aninho","Contratar buffet (salgados e doces)",
+      "Comprar a decoração (painel e balões)","Reservar o fotógrafo","Comprar as lembrancinhas",
+      "Escolher o vestido da Alice","Confirmar presença dos convidados","Organizar a mesa do bolo",
+      "Comprar velinha nº 1 e topo de bolo","Definir as bebidas","Separar fraldas e itens da Alice para o dia"
+    ].map(t=>({id:uid(),texto:t,feita:false})),
+    schedule:[
+      {id:uid(),hora:"15:00",atividade:"Recepção dos convidados"},
+      {id:uid(),hora:"16:00",atividade:"Lanche / buffet"},
+      {id:uid(),hora:"17:00",atividade:"Parabéns e bolo 🎂"},
+      {id:uid(),hora:"17:30",atividade:"Fotos com a aniversariante"},
+      {id:uid(),hora:"18:30",atividade:"Entrega das lembrancinhas"}
+    ],
+    notes:"",
+    ui:{openCats:{},unpaidOnly:false}
+  };
+}
+
+var state, pendingFocus=null;
+function load(){
+  var r=rawGet();
+  if(r){try{state=JSON.parse(r)}catch(e){state=defaults()}}else state=defaults();
+  var d=defaults(); for(var k in d){if(!(k in state))state[k]=d[k]}
+  if(!state.ui)state.ui=d.ui; if(!state.ui.openCats)state.ui.openCats={};
+  if(!state.meta)state.meta=d.meta;
+}
+function save(){rawSet(JSON.stringify(state))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+/* ===== UTIL ===== */
+function brl(n){n=Number(n)||0;return n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function parseMoney(s){if(typeof s==="number")return s;s=(s||"").toString().trim();if(!s)return 0;s=s.replace(/[^\d.,-]/g,"");if(s.indexOf(",")>-1)s=s.replace(/\./g,"").replace(",",".");return Math.max(0,parseFloat(s)||0)}
+function esc(s){return(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function fmtDate(iso){if(!iso)return "—";var p=iso.split("-");return p.length<3?iso:p[2]+"/"+p[1]+"/"+p[0]}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2100)}
+
+/* ===== NAV ===== */
+function go(v){
+  document.querySelectorAll(".view").forEach(s=>s.classList.remove("active"));
+  document.getElementById("view-"+v).classList.add("active");
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ===== HEADER + FESTA FORM ===== */
+function renderHeader(){
+  var m=state.meta;
+  document.getElementById("hName").textContent=m.babyName||"Alice";
+  document.getElementById("hDate").textContent=m.eventDate?fmtDate(m.eventDate)+(m.eventTime?" · "+m.eventTime:""):"A definir";
+  document.getElementById("hVenue").textContent=m.venue||"A definir";
+  var cd=document.getElementById("hCountdown");
+  if(m.eventDate){
+    var t=new Date();t.setHours(0,0,0,0);var ev=new Date(m.eventDate+"T00:00:00");
+    var d=Math.round((ev-t)/86400000);
+    if(d>0)cd.innerHTML='<span class="num">'+d+'</span><span>'+(d===1?"dia para a festa":"dias para a festa")+'</span>';
+    else if(d===0)cd.innerHTML='<span class="num">🎉</span><span>É hoje! Feliz aniversário!</span>';
+    else cd.innerHTML='<span>💖 A festa já aconteceu</span>';
+  }else cd.innerHTML='<span>Defina a data abaixo ✦</span>';
+}
+function renderFesta(){
+  var m=state.meta;
+  document.getElementById("festaForm").innerHTML=`
+    <div class="f-field full"><label>Aniversariante</label><input value="${esc(m.babyName)}" onchange="setMeta('babyName',this.value)"></div>
+    <div class="f-field"><label>Data</label><input type="date" value="${esc(m.eventDate)}" onchange="setMeta('eventDate',this.value)"></div>
+    <div class="f-field"><label>Horário</label><input type="time" value="${esc(m.eventTime)}" onchange="setMeta('eventTime',this.value)"></div>
+    <div class="f-field full"><label>Local</label><input value="${esc(m.venue)}" placeholder="Salão, casa, buffet..." onchange="setMeta('venue',this.value)"></div>
+    <div class="f-field full"><label>Tema</label><input value="${esc(m.theme)}" onchange="setMeta('theme',this.value)"></div>`;
+}
+function setMeta(k,v){state.meta[k]=v.trim();save();renderHeader();if(k==="babyName")document.getElementById("hName").textContent=v.trim()||"Alice"}
+
+/* ===== ORÇAMENTO ===== */
+function budgetTotals(){
+  var tot=0,pago=0,byCat={};
+  state.items.forEach(i=>{var v=Number(i.valor)||0;tot+=v;if(i.pago)pago+=v;
+    if(!byCat[i.categoria])byCat[i.categoria]={tot:0,pago:0,n:0,np:0};
+    byCat[i.categoria].tot+=v;byCat[i.categoria].n++;if(i.pago){byCat[i.categoria].pago+=v;byCat[i.categoria].np++}});
+  return {tot,pago,falta:tot-pago,byCat};
+}
+function renderBudget(){
+  var q=(document.getElementById("itemSearch").value||"").toLowerCase();
+  var T=budgetTotals();
+  var cap=parseMoney(state.meta.budgetCap);
+  var pct=T.tot?Math.round(T.pago/T.tot*100):0;
+  var capHtml=`<div class="cap-line"><span>Teto de gastos (opcional):</span>
+     <input inputmode="decimal" value="${esc(state.meta.budgetCap)}" placeholder="R$ 0" onchange="setMeta('budgetCap',this.value);renderBudget();renderDash()"></div>`;
+  if(cap>0){var u=Math.round(T.tot/cap*100);capHtml+=`<div class="small ${T.tot>cap?'':''}" style="margin-top:6px;color:${T.tot>cap?'var(--bad)':'var(--ink-soft)'}">Estimado usa <b>${u}%</b> do teto de ${brl(cap)} ${T.tot>cap?'⚠️ acima do teto':''}</div>`}
+  document.getElementById("budgetHero").innerHTML=`
+    <div class="budget-nums">
+      <div class="bn"><div class="l">Estimado</div><div class="n">${brl(T.tot)}</div></div>
+      <div class="bn pago"><div class="l">Já paguei</div><div class="n">${brl(T.pago)}</div></div>
+      <div class="bn falta"><div class="l">Falta</div><div class="n">${brl(T.falta)}</div></div>
+    </div>
+    <div class="big-track"><i style="width:${pct}%"></i></div>
+    <div class="small muted" style="text-align:center;margin-top:6px">${pct}% do orçamento já pago</div>
+    ${capHtml}`;
+
+  document.getElementById("chipUnpaid").classList.toggle("on",!!state.ui.unpaidOnly);
+
+  var box=document.getElementById("catList"), html="";
+  CATS.forEach(c=>{
+    var items=state.items.filter(i=>i.categoria===c.id);
+    var vis=items.filter(i=>(!q||i.nome.toLowerCase().includes(q))&&(!state.ui.unpaidOnly||!i.pago));
+    if(q&&!vis.length)return;
+    var cd=T.byCat[c.id]||{tot:0,pago:0,n:0,np:0};
+    var p=cd.tot?Math.round(cd.pago/cd.tot*100):0;
+    var open=!!state.ui.openCats[c.id]||!!q;
+    var rows=vis.map(i=>`
+      <div class="bi-row ${i.pago?'paid-on':''}">
+        <button class="paid ${i.pago?'on':''}" onclick="togglePaid('${i.id}')" aria-label="marcar pago">${i.pago?'✓':''}</button>
+        <input class="bi-name" value="${esc(i.nome)}" onchange="setItemName('${i.id}',this.value)" id="nm_${i.id}" placeholder="Nome do item">
+        <div class="bi-val"><span class="rs">R$</span><input class="bi-num" inputmode="decimal" value="${i.valor}" onchange="setItemVal('${i.id}',this.value)"></div>
+        <button class="bi-x" onclick="delItem('${i.id}')" aria-label="excluir">×</button>
+      </div>`).join("");
+    html+=`<div class="cat ${open?'open':''}">
+      <div class="cat-head" onclick="toggleCat('${c.id}')">
+        <div class="cat-emoji" style="background:${c.cor}1f">${c.emoji}</div>
+        <div class="cat-info">
+          <div class="cat-name">${c.nome} <span class="cat-count">· ${cd.np}/${cd.n} pagos</span></div>
+          <div class="cat-prog"><i style="width:${p}%;background:${c.cor}"></i></div>
+        </div>
+        <div class="cat-money"><div class="m1">${brl(cd.tot)}</div><div class="m2">pago ${brl(cd.pago)}</div></div>
+        <span class="chev">▶</span>
+      </div>
+      <div class="cat-body">
+        ${rows||'<p class="small muted" style="padding:6px 4px">Nenhum item aqui ainda.</p>'}
+        <button class="add-inline" onclick="addItem('${c.id}')">＋ adicionar em ${c.nome}</button>
+      </div>
+    </div>`;
+  });
+  box.innerHTML=html||'<div class="empty"><span class="em">🎈</span>Nada encontrado.</div>';
+  if(pendingFocus){var el=document.getElementById(pendingFocus);if(el){el.focus()}pendingFocus=null}
+}
+function toggleCat(id){state.ui.openCats[id]=!state.ui.openCats[id];save();renderBudget()}
+function toggleAllCats(){var anyClosed=CATS.some(c=>!state.ui.openCats[c.id]);CATS.forEach(c=>state.ui.openCats[c.id]=anyClosed);save();renderBudget()}
+function toggleUnpaid(){state.ui.unpaidOnly=!state.ui.unpaidOnly;save();renderBudget()}
+function togglePaid(id){var i=state.items.find(x=>x.id===id);i.pago=!i.pago;save();renderBudget();renderDash()}
+function setItemName(id,v){var i=state.items.find(x=>x.id===id);i.nome=v.trim();save()}
+function setItemVal(id,v){var i=state.items.find(x=>x.id===id);i.valor=parseMoney(v);save();renderBudget();renderDash()}
+function delItem(id){state.items=state.items.filter(x=>x.id!==id);save();renderBudget();renderDash();toast("Item removido")}
+function addItem(catid){var i={id:uid(),categoria:catid,nome:"",valor:0,pago:false};state.items.push(i);state.ui.openCats[catid]=true;pendingFocus="nm_"+i.id;save();renderBudget()}
+
+/* ===== CONVIDADOS ===== */
+function statusInfo(s){
+  if(s==="confirmado")return{t:"Confirmado",bg:"#E9F6EF",c:"#3F8E6E"};
+  if(s==="recusado")return{t:"Não vai",bg:"#FBEAEE",c:"#C16B82"};
+  return{t:"Pendente",bg:"#FFF3E0",c:"#B07A1F"};
+}
+function renderGuests(){
+  var q=(document.getElementById("guestSearch").value||"").toLowerCase();
+  var f=document.getElementById("guestFilter").value;
+  var conf=state.guests.filter(g=>g.status==="confirmado");
+  var pend=state.guests.filter(g=>g.status==="pendente");
+  var pessoas=conf.reduce((a,g)=>a+(Number(g.pessoas)||0),0);
+  document.getElementById("guestTotals").innerHTML=
+    `<div class="stat"><div class="label">Confirmados</div><div class="value" style="color:var(--ok)">${conf.length}</div></div>`+
+    `<div class="stat"><div class="label">Pendentes</div><div class="value" style="color:var(--warn)">${pend.length}</div></div>`+
+    `<div class="stat"><div class="label">Pessoas confirmadas</div><div class="value">${pessoas}</div></div>`;
+  var list=state.guests.filter(g=>(!f||g.status===f)&&(!q||(g.nome||"").toLowerCase().includes(q)));
+  var box=document.getElementById("guestList");
+  if(!list.length){box.innerHTML='<div class="empty"><span class="em">💝</span>'+(state.guests.length?"Ninguém encontrado.":"Toque abaixo para adicionar convidados.")+'</div>';return}
+  box.innerHTML=list.map(g=>{var s=statusInfo(g.status);return `
+    <div class="row-line">
+      <button class="gstatus" style="background:${s.bg};color:${s.c}" onclick="cycleGuest('${g.id}')">${s.t}</button>
+      <input class="flex-in" value="${esc(g.nome)}" placeholder="Nome" onchange="setGuestName('${g.id}',this.value)" id="gn_${g.id}">
+      <div class="people"><button onclick="guestPeople('${g.id}',-1)">−</button><span class="pn">${Number(g.pessoas)||1}</span><button onclick="guestPeople('${g.id}',1)">＋</button></div>
+      <button class="bi-x" onclick="delGuest('${g.id}')">×</button>
+    </div>`}).join("");
+}
+function addGuest(){var g={id:uid(),nome:"",status:"pendente",pessoas:1};state.guests.push(g);pendingFocus="gn_"+g.id;save();renderGuests();renderDash();var el=document.getElementById("gn_"+g.id);if(el)el.focus()}
+function setGuestName(id,v){state.guests.find(x=>x.id===id).nome=v.trim();save()}
+function cycleGuest(id){var g=state.guests.find(x=>x.id===id);var o=["pendente","confirmado","recusado"];g.status=o[(o.indexOf(g.status)+1)%3];save();renderGuests();renderDash()}
+function guestPeople(id,d){var g=state.guests.find(x=>x.id===id);g.pessoas=Math.max(1,(Number(g.pessoas)||1)+d);save();renderGuests();renderDash()}
+function delGuest(id){state.guests=state.guests.filter(x=>x.id!==id);save();renderGuests();renderDash()}
+
+/* ===== TAREFAS ===== */
+function renderTasks(){
+  var box=document.getElementById("taskList");
+  var done=state.tasks.filter(t=>t.feita).length,total=state.tasks.length,pct=total?Math.round(done/total*100):0;
+  document.getElementById("taskPct").textContent=pct+"%";document.getElementById("taskBar").style.width=pct+"%";
+  document.getElementById("taskCount").textContent=done+" de "+total+" concluídas";
+  if(!total){box.innerHTML='<div class="empty"><span class="em">🗒️</span>Adicione tarefas.</div>';return}
+  box.innerHTML=state.tasks.map(t=>`
+    <div class="row-line ${t.feita?'done':''}">
+      <div class="cbox ${t.feita?'on':''}" onclick="toggleTask('${t.id}')">${t.feita?'✓':''}</div>
+      <input class="flex-in" value="${esc(t.texto)}" placeholder="Descreva a tarefa" onchange="setTask('${t.id}',this.value)" id="tk_${t.id}">
+      <button class="bi-x" onclick="delTask('${t.id}')">×</button>
+    </div>`).join("");
+}
+function addTask(){var t={id:uid(),texto:"",feita:false};state.tasks.push(t);pendingFocus="tk_"+t.id;save();renderTasks();var el=document.getElementById("tk_"+t.id);if(el)el.focus()}
+function setTask(id,v){state.tasks.find(x=>x.id===id).texto=v.trim();save()}
+function toggleTask(id){var t=state.tasks.find(x=>x.id===id);t.feita=!t.feita;save();renderTasks();renderDash()}
+function delTask(id){state.tasks=state.tasks.filter(x=>x.id!==id);save();renderTasks();renderDash()}
+
+/* ===== CRONOGRAMA ===== */
+function renderSchedule(){
+  var box=document.getElementById("scheduleList");
+  if(!state.schedule.length){box.innerHTML='<div class="empty"><span class="em">🕐</span>Monte o roteiro.</div>';return}
+  box.innerHTML=state.schedule.map(s=>`
+    <div class="row-line">
+      <input type="time" class="flex-in time-in" value="${esc(s.hora)}" onchange="setSchedule('${s.id}','hora',this.value)">
+      <input class="flex-in" value="${esc(s.atividade)}" placeholder="Atividade" onchange="setSchedule('${s.id}','atividade',this.value)" id="sc_${s.id}">
+      <button class="bi-x" onclick="delSchedule('${s.id}')">×</button>
+    </div>`).join("");
+}
+function addSchedule(){var s={id:uid(),hora:"",atividade:""};state.schedule.push(s);pendingFocus="sc_"+s.id;save();renderSchedule();var el=document.getElementById("sc_"+s.id);if(el)el.focus()}
+function setSchedule(id,k,v){var s=state.schedule.find(x=>x.id===id);s[k]=v;if(k==="hora")state.schedule.sort((a,b)=>(a.hora||"").localeCompare(b.hora||""));save();if(k==="hora")renderSchedule()}
+function delSchedule(id){state.schedule=state.schedule.filter(x=>x.id!==id);save();renderSchedule()}
+
+/* ===== NOTAS ===== */
+var nt;function onNotes(){state.notes=document.getElementById("notesArea").value;clearTimeout(nt);nt=setTimeout(save,400)}
+
+/* ===== DASHBOARD ===== */
+function renderDash(){
+  var T=budgetTotals();
+  var cap=parseMoney(state.meta.budgetCap);
+  var pctPago=T.tot?Math.round(T.pago/T.tot*100):0;
+  var conf=state.guests.filter(g=>g.status==="confirmado");
+  var pessoas=conf.reduce((a,g)=>a+(Number(g.pessoas)||0),0);
+  var done=state.tasks.filter(t=>t.feita).length,total=state.tasks.length,taskPct=total?Math.round(done/total*100):0;
+
+  document.getElementById("statGrid").innerHTML=
+    `<div class="stat hero-rose"><div class="label">Estimado</div><div class="value">${brl(T.tot)}</div>${cap>0?`<div class="foot muted">teto ${brl(cap)}</div>`:''}</div>`+
+    `<div class="stat"><div class="label">Já paguei</div><div class="value" style="color:var(--ok)">${brl(T.pago)}</div><div class="bar"><i style="width:${pctPago}%"></i></div><div class="foot muted">${pctPago}% pago</div></div>`+
+    `<div class="stat"><div class="label">Falta pagar</div><div class="value" style="color:var(--rose-deep)">${brl(T.falta)}</div></div>`+
+    `<div class="stat hero-rose"><div class="label">Confirmados</div><div class="value">${conf.length}</div><div class="foot muted">${pessoas} pessoas</div></div>`;
+
+  // donut
+  var segs=CATS.map(c=>({label:c.nome,value:(T.byCat[c.id]?T.byCat[c.id].tot:0),color:c.cor,emoji:c.emoji})).filter(s=>s.value>0);
+  var ts=segs.reduce((a,s)=>a+s.value,0);
+  var dw=document.getElementById("donutWrap");
+  if(!ts){dw.innerHTML='<div class="empty" style="width:100%"><span class="em">🥧</span>Sem itens no orçamento.</div>';}
+  else{
+    var R=62,SW=26,C=2*Math.PI*R,prev=0;
+    var circ=segs.map(s=>{var len=s.value/ts*C;var e=`<circle r="${R}" cx="90" cy="90" fill="none" stroke="${s.color}" stroke-width="${SW}" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-prev}" transform="rotate(-90 90 90)"/>`;prev+=len;return e}).join("");
+    var leg=segs.slice().sort((a,b)=>b.value-a.value).map(s=>`<div class="row"><span class="dot" style="background:${s.color}"></span><span>${s.emoji} ${s.label}</span><span class="v">${brl(s.value)}</span><span class="p">${Math.round(s.value/ts*100)}%</span></div>`).join("");
+    dw.innerHTML=`<svg width="178" height="178" viewBox="0 0 180 180">${circ}<text x="90" y="84" text-anchor="middle" font-size="11" fill="#937E89" font-weight="700">Estimado</text><text x="90" y="103" text-anchor="middle" font-size="14" fill="#5A4650" font-weight="800">${brl(ts).replace(/\u00a0/g,'')}</text></svg><div class="legend">${leg}</div>`;
+  }
+  // pago por categoria
+  var cp=document.getElementById("catProgress");
+  var rows=CATS.map(c=>{var cd=T.byCat[c.id];if(!cd||cd.tot<=0)return"";var p=Math.round(cd.pago/cd.tot*100);
+    return `<div><div class="pl-top"><span>${c.emoji} ${c.nome}</span><b>${brl(cd.pago)} / ${brl(cd.tot)}</b></div><div class="track"><i style="width:${p}%;background:linear-gradient(90deg,${c.color||c.cor},${c.cor})"></i></div></div>`}).filter(Boolean).join("");
+  cp.innerHTML=rows||'<div class="empty"><span class="em">📊</span>Sem dados.</div>';
+  // rsvp
+  var rb=document.getElementById("rsvpBars"),tg=state.guests.length;
+  if(!tg)rb.innerHTML='<div class="empty"><span class="em">👶</span>Adicione convidados.</div>';
+  else{var data=[["Confirmados",conf.length,"#5FA98C"],["Pendentes",state.guests.filter(g=>g.status==="pendente").length,"#D69A3F"],["Não vão",state.guests.filter(g=>g.status==="recusado").length,"#C96A85"]];
+    rb.innerHTML=data.map(d=>{var p=Math.round(d[1]/tg*100);return `<div><div class="pl-top"><span>${d[0]}</span><b>${d[1]} (${p}%)</b></div><div class="track"><i style="width:${p}%;background:${d[2]}"></i></div></div>`}).join("")}
+  // task mini
+  document.getElementById("taskMini").innerHTML=`<div class="stat hero-rose"><div class="label">Concluídas</div><div class="value">${taskPct}%</div><div class="bar"><i style="width:${taskPct}%"></i></div><div class="foot muted">${done} de ${total} · faltam ${total-done}</div></div>`;
+  // save note
+  document.getElementById("saveNote").innerHTML=`💾 <b>Seus dados ficam salvos neste navegador</b> (funciona offline e publicado no GitHub). Para abrir em outro celular/computador, use <b>Backup</b> e depois <b>Restaurar</b> o arquivo. Atualizar o site no GitHub não apaga o que você já preencheu aqui.`;
+}
+
+/* ===== RENDER ALL ===== */
+function renderAll(){renderHeader();renderFesta();renderDash();renderBudget();renderGuests();renderTasks();renderSchedule();document.getElementById("notesArea").value=state.notes||""}
+
+/* ===== EXCEL ===== */
+function xc(v,t){t=t||"String";return `<Cell><Data ss:Type="${t}">${esc(v)}</Data></Cell>`}
+function xr(c){return "<Row>"+c+"</Row>"}
+function xs(n,r){return `<Worksheet ss:Name="${esc(n)}"><Table>${r}</Table></Worksheet>`}
+function exportExcel(){
+  var T=budgetTotals();
+  var resumo=xr(xc("Festa de 1 ano")+xc(state.meta.babyName))+xr(xc("Data")+xc(fmtDate(state.meta.eventDate)+(state.meta.eventTime?" "+state.meta.eventTime:"")))+
+    xr(xc("Local")+xc(state.meta.venue))+xr(xc("Tema")+xc(state.meta.theme))+xr("")+
+    xr(xc("Estimado")+xc(T.tot,"Number"))+xr(xc("Já pago")+xc(T.pago,"Number"))+xr(xc("Falta")+xc(T.falta,"Number"));
+  var o=xr(xc("Categoria")+xc("Item")+xc("Valor")+xc("Pago?"));
+  state.items.forEach(i=>{o+=xr(xc(cat(i.categoria).nome)+xc(i.nome)+xc(i.valor,"Number")+xc(i.pago?"Sim":"Não"))});
+  o+=xr(xc("TOTAL")+xc("")+xc(T.tot,"Number")+xc(""));
+  var g=xr(xc("Nome")+xc("Presença")+xc("Pessoas"));
+  state.guests.forEach(x=>{g+=xr(xc(x.nome)+xc(statusInfo(x.status).t)+xc(x.pessoas||1,"Number"))});
+  var t=xr(xc("Tarefa")+xc("Status"));state.tasks.forEach(x=>{t+=xr(xc(x.texto)+xc(x.feita?"Concluída":"Pendente"))});
+  var s=xr(xc("Horário")+xc("Atividade"));state.schedule.forEach(x=>{s+=xr(xc(x.hora)+xc(x.atividade))});
+  var xml='<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'+
+    xs("Resumo",resumo)+xs("Compras",o)+xs("Convidados",g)+xs("Tarefas",t)+xs("Cronograma",s)+'</Workbook>';
+  dl("Festa_Alice.xls",xml,"application/vnd.ms-excel");toast("Planilha exportada 📊");
+}
+/* ===== PDF ===== */
+function exportPDF(){
+  var T=budgetTotals(),conf=state.guests.filter(g=>g.status==="confirmado");
+  var pessoas=conf.reduce((a,g)=>a+(Number(g.pessoas)||0),0);
+  var h=`<h1>🎀 Festa de 1 Aninho · ${esc(state.meta.babyName)}</h1>
+    <p><b>Data:</b> ${fmtDate(state.meta.eventDate)}${state.meta.eventTime?" às "+state.meta.eventTime:""} &nbsp; <b>Local:</b> ${esc(state.meta.venue||"—")} &nbsp; <b>Tema:</b> ${esc(state.meta.theme||"—")}</p>
+    <h2>Orçamento</h2><table><tr><th>Estimado</th><th>Já pago</th><th>Falta</th></tr><tr class="tot"><td>${brl(T.tot)}</td><td>${brl(T.pago)}</td><td>${brl(T.falta)}</td></tr></table>
+    <h2>Lista de compras</h2><table><tr><th>Categoria</th><th>Item</th><th>Valor</th><th>Pago?</th></tr>`;
+  state.items.forEach(i=>{h+=`<tr><td>${esc(cat(i.categoria).nome)}</td><td>${esc(i.nome)}</td><td>${brl(i.valor)}</td><td>${i.pago?"✔":""}</td></tr>`});
+  h+=`<tr class="tot"><td colspan="2">TOTAL</td><td>${brl(T.tot)}</td><td></td></tr></table>
+    <h2>Convidados (${conf.length} confirmados · ${pessoas} pessoas)</h2><table><tr><th>Nome</th><th>Presença</th><th>Pessoas</th></tr>`;
+  state.guests.forEach(g=>{h+=`<tr><td>${esc(g.nome)}</td><td>${statusInfo(g.status).t}</td><td>${g.pessoas||1}</td></tr>`});
+  var done=state.tasks.filter(t=>t.feita).length;
+  h+=`</table><h2>Tarefas (${done}/${state.tasks.length})</h2><table><tr><th>Tarefa</th><th>Status</th></tr>`;
+  state.tasks.forEach(t=>{h+=`<tr><td>${esc(t.texto)}</td><td>${t.feita?"✔ Concluída":"Pendente"}</td></tr>`});
+  h+=`</table><h2>Cronograma</h2><table><tr><th>Horário</th><th>Atividade</th></tr>`;
+  state.schedule.forEach(s=>{h+=`<tr><td>${esc(s.hora)}</td><td>${esc(s.atividade)}</td></tr>`});
+  h+=`</table>`;
+  if(state.notes)h+=`<h2>Observações</h2><p>${esc(state.notes).replace(/\n/g,"<br>")}</p>`;
+  document.getElementById("printArea").innerHTML=h;toast("Use 'Salvar como PDF' 📄");setTimeout(()=>window.print(),300);
+}
+/* ===== BACKUP ===== */
+function backupJSON(){dl("backup_festa_alice.json",JSON.stringify(state,null,2),"application/json");toast("Backup salvo 💾")}
+function importJSON(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result);if(!d.meta&&!d.items)throw 0;state=d;var df=defaults();for(var k in df){if(!(k in state))state[k]=df[k]}if(!state.ui)state.ui=df.ui;save();renderAll();toast("Dados restaurados ✦")}catch(e){toast("Arquivo inválido")}ev.target.value=""};
+  r.readAsText(f)}
+function dl(name,content,type){var b=new Blob([content],{type:type+";charset=utf-8"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},100)}
+
+load();renderAll();
+</script>
+</body>
+</html>
